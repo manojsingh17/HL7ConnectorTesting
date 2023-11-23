@@ -76,7 +76,7 @@ namespace HL7CreationFromJson
             {
                 Segment NTESegment = new Segment("NTE", new HL7Encoding());
                 NTESegment.AddNewField((i + 1).ToString(), 1);
-                NTESegment.AddNewField(inpModel.Comments[i].Comment, 2);
+                NTESegment.AddNewField(inpModel.Comments[i].SourceOfComment, 2);
                 NTESegment.AddNewField(inpModel.Comments[i].Comment, 3); 
                 oHl7Message.AddNewSegment(NTESegment);
             }
