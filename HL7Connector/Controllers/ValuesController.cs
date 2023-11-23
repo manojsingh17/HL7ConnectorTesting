@@ -22,23 +22,10 @@ namespace HL7Connector.Controllers
             return "value";
         }
 
-        // POST api/values
-        public void Post([FromBody]string value)
-        {
-        }
-
-        // PUT api/values/5
-        public void Put(int id, [FromBody]string value)
-        {
-        }
-
-        // DELETE api/values/5
-        public void Delete(int id)
-        {
-        }
+        
 
         [HttpPost]
-        public IHttpActionResult Order(JsonHL7Fields HL7OrderData)
+        public IHttpActionResult Post(JsonHL7Fields HL7OrderData)
         {
             //Get Data in HL7 Format
             var HL7FormatMessage = Hl7Helper.GetHL7Format(HL7OrderData);

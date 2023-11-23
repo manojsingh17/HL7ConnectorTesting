@@ -21,72 +21,66 @@ namespace HL7CreationFromJson
             mshSegment.AddNewField(inpModel.ReceivingApplication ?? "", 5);
             mshSegment.AddNewField(inpModel.ReceivingFacility ?? "", 6);
             mshSegment.AddNewField(DateTime.Now.ToString("yyyymmddhhMMss"), 7);
-            mshSegment.AddNewField("ORM", 9); // Message type
+            mshSegment.AddNewField("ORM^001", 9); // Message type
+            mshSegment.AddNewField(inpModel.AppointmentId ?? "", 10);
+            mshSegment.AddNewField("D", 11); // D=Debugging; P=Production; T=Training 
             mshSegment.AddNewField("2.3", 12); // Message version
+            mshSegment.AddNewField("AL", 15); 
+            mshSegment.AddNewField("NE", 16);
+            mshSegment.AddNewField("IHE_PCD_ORU_R01^IHE_PCD^1.3.6.1.4.1.19376.1.6.1.1.1^ISO", 21);
             oHl7Message.AddNewSegment(mshSegment);
 
             // Add PID Segment
             Segment pidSegment = new Segment("PID", new HL7Encoding());
             pidSegment.AddNewField("1", 1);
-            pidSegment.AddNewField(inpModel.PatientChartNo ?? "", 2); // Patient ID
-            pidSegment.AddNewField(inpModel.PatientChartNo ?? "", 4); // Alternate Patient ID
-            pidSegment.AddNewField($"{inpModel.PatientLastName ?? ""}^{inpModel.PatientFirstName ?? ""}", 5); // Patient Name
+            pidSegment.AddNewField(inpModel.PatientIdentifier ?? "", 2); // Patient ID
+          //  pidSegment.AddNewField(inpModel.PatientIdentifier ?? "", 4); // Alternate Patient ID
+            pidSegment.AddNewField($"{inpModel.PatientLastName ?? ""}^{inpModel.PatientFirstName ?? ""}^{inpModel.PatientMiddleName ?? ""}^{inpModel.PatientSuffix ?? ""}^{inpModel.PatientPrefix ?? ""}", 5); // Patient Name
             pidSegment.AddNewField(inpModel.PatientDOB ?? "", 7); // Patient DOB
             pidSegment.AddNewField(inpModel.PatientGender ?? "", 8); // Patient Gender
-            pidSegment.AddNewField(inpModel.PatientAddress ?? "", 11); // Patient Address
-            pidSegment.AddNewField(inpModel.PatientPhoneHome ?? "", 13); // Patient Home Phone number
-            pidSegment.AddNewField(inpModel.PatientSSN ?? "", 19); // Patient SSN Number
+         //   pidSegment.AddNewField(inpModel.PatientAddress ?? "", 11); // Patient Address
+          //  pidSegment.AddNewField(inpModel.PatientPhoneHome ?? "", 13); // Patient Home Phone number
+         //   pidSegment.AddNewField(inpModel.PatientSSN ?? "", 19); // Patient SSN Number
             oHl7Message.AddNewSegment(pidSegment);
 
             // Add PV1 Segment
             Segment pv1Segment = new Segment("PV1", new HL7Encoding());
-            pv1Segment.AddNewField($"{inpModel.PhysicianNpi ?? ""}^{inpModel.PhysicianName}", 7); // Physician information
+            pidSegment.AddNewField(inpModel.PatientClass ?? "", 2);
+            pidSegment.AddNewField(inpModel.AssignedLocation ?? "", 3);
+            pv1Segment.AddNewField($"{inpModel.PhysicianNpi ?? ""}^{inpModel.PhysicianLastName ?? ""}^{inpModel.PhysicianFirstName??""}^{inpModel.PhysicianMiddleName ?? ""}^{inpModel.PhysicianSuffix ?? ""}^{inpModel.PhysicianPrefix ?? ""}", 8); // Physician information
             oHl7Message.AddNewSegment(pv1Segment);
-
-            //// Add IN1 Segment
-            //Segment in1Segment = new Segment("IN1", new HL7Encoding());
-            //in1Segment.AddNewField("1", 1);
-            //in1Segment.AddNewField(inpModel.InsuranceName ?? "", 4); // Insurance Name
-            //in1Segment.AddNewField(inpModel.InsuranceGroup ?? "", 8); // Insurance Group Name
-            //in1Segment.AddNewField(inpModel.InsuredName ?? "", 16); // Insured Name
-            //in1Segment.AddNewField(inpModel.RelationToPatient ?? "", 17); // Insured Relatino
-            //in1Segment.AddNewField(inpModel.InsuredDob ?? "", 18); // Insured Date of Birth
-            //in1Segment.AddNewField(inpModel.InsurancePolicy ?? "", 36); // Insurance Policy Number
-            //oHl7Message.AddNewSegment(in1Segment);
+           
 
             // Add ORC Segment
             Segment orcSegment = new Segment("ORC", new HL7Encoding());
             orcSegment.AddNewField("NW", 1); // New Order
+            orcSegment.AddNewField(inpModel.OrderNumber, 2); //Order Number
+            orcSegment.AddNewField(inpModel.ExpectedExamDateTime ?? "", 7); // Date/Time of Order fullfilled
             orcSegment.AddNewField(inpModel.CollectionDateTime ?? "", 9); // Date/Time of Transaction
-            orcSegment.AddNewField($"{inpModel.PhysicianNpi ?? ""}^{inpModel.PhysicianName ?? ""}", 12); // Ordering Provider
+            orcSegment.AddNewField($"{inpModel.OrderingProviderNpi ?? ""}^{inpModel.OrderingProviderLastName ?? ""}^{inpModel.OrderingProviderFirstName ?? ""}^{inpModel.OrderingProviderMiddleName ?? ""}^{inpModel.OrderingProviderSuffix ?? ""}^{inpModel.OrderingProviderPrefix ?? ""}", 12); // Ordering Provider
+            orcSegment.AddNewField(inpModel.ProviderLocation, 13);
+            orcSegment.AddNewField(inpModel.ProviderPhoneNumber, 14);
             oHl7Message.AddNewSegment(orcSegment);
 
             // Add OBR Segment
             Segment obrSegment = new Segment("OBR", new HL7Encoding());
-            obrSegment.AddNewField(inpModel.CollectionDateTime ?? "", 7); // Date/Time of Transaction
-            obrSegment.AddNewField($"{inpModel.PhysicianNpi ?? ""}^{inpModel.PhysicianName ?? ""}", 16); // Ordering Provider
+            obrSegment.AddNewField(inpModel.SetId ?? "", 1);
+            obrSegment.AddNewField(inpModel.PlacerOrderNumber ?? "", 2);
+            obrSegment.AddNewField(inpModel.UniversalServiceID ?? "", 4);
+            obrSegment.AddNewField(inpModel.CollectionDateTime ?? "", 6); // Date/Time of Transaction
+            obrSegment.AddNewField(inpModel.ProcedureCode ?? "", 46);
             oHl7Message.AddNewSegment(obrSegment);
 
-            //// Add Diagnosis
-            //for (int i = 0; i < inpModel.Icd10Codes.Count; i++)
-            //{
-            //    Segment dg1Segment = new Segment("DG1", new HL7Encoding());
-            //    dg1Segment.AddNewField((i + 1).ToString(), 1);
-            //    dg1Segment.AddNewField("I10", 2); // Icd Type
-            //    dg1Segment.AddNewField(inpModel.Icd10Codes[i], 3); // Icd Code
-            //    oHl7Message.AddNewSegment(dg1Segment);
-            //}
+            // Add Diagnosis
+            for (int i = 0; i < inpModel.Comments.Count; i++)
+            {
+                Segment NTESegment = new Segment("NTE", new HL7Encoding());
+                NTESegment.AddNewField((i + 1).ToString(), 1);
+                NTESegment.AddNewField(inpModel.Comments[i].Comment, 2);
+                NTESegment.AddNewField(inpModel.Comments[i].Comment, 3); 
+                oHl7Message.AddNewSegment(NTESegment);
+            }
 
-            //// Add OBX
-            //for (int i = 0; i < inpModel.QuestionAnswer.Count; i++)
-            //{
-            //    Segment obxSegment = new Segment("OBX", new HL7Encoding());
-            //    obxSegment.AddNewField((i + 1).ToString(), 1);
-            //    obxSegment.AddNewField("ST", 2); // Value Type
-            //    obxSegment.AddNewField(inpModel.QuestionAnswer[i].Key, 3); // Question
-            //    obxSegment.AddNewField(inpModel.QuestionAnswer[i].Value, 5); // Answer
-            //    oHl7Message.AddNewSegment(obxSegment);
-            //}
 
             string oRetMessage = oHl7Message.SerializeMessage(false);
 

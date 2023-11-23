@@ -166,7 +166,7 @@
     <Compile Include="Models\HL7Exception.cs" />
     <Compile Include="Models\HL7Helper.cs" />
     <Compile Include="Models\HL7Model.cs" />
-    <Compile Include="Models\JsonHL7Filed.cs" />
+    <Compile Include="Models\JsonHL7Fields.cs" />
     <Compile Include="Models\JsonParsorHelper.cs" />
     <Compile Include="Models\Message.cs" />
     <Compile Include="Models\MessageElement.cs" />
